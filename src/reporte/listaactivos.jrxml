@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="08194939-eeb5-49db-bee7-7f1d7c2a5620">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="borde">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#666666"/>
+			<leftPen lineWidth="0.5" lineColor="#666666"/>
+			<bottomPen lineWidth="0.5" lineColor="#666666"/>
+			<rightPen lineWidth="0.5" lineColor="#666666"/>
+		</box>
+	</style>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#B35048">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="datos" uuid="934fcbf7-b08d-4993-acf2-6b98dcbdcda8">
+		<queryString>
+			<![CDATA[SELECT
+    `gym_usuarios`.`identificacion` AS "Identificacion"
+    ,CONCAT( `gym_usuarios`.`nombres`,' ', `gym_usuarios`.`apellidos`) AS "Nombre"
+    , `gym_planes`.`nombreservicio` AS "Plan"
+    , DATE_FORMAT(`gym_asignados`.`fechafin`, "%d/%m/%Y")AS "Fecha Fin"
+    , `asignados_dias`.`dias` AS "Días"
+FROM
+    `bohiogym`.`gym_asignados`
+    INNER JOIN `bohiogym`.`gym_usuarios` 
+        ON (`gym_asignados`.`iduser` = `gym_usuarios`.`id`)
+    INNER JOIN `bohiogym`.`gym_planes` 
+        ON (`gym_asignados`.`idplan` = `gym_planes`.`id`)
+    LEFT JOIN `bohiogym`.`asignados_dias` 
+        ON (`asignados_dias`.`idasignacion` = `gym_asignados`.`id`)
+WHERE (`gym_asignados`.`estado` =1);]]>
+		</queryString>
+		<field name="Identificacion" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="Nombre" class="java.lang.String"/>
+		<field name="Plan" class="java.lang.String"/>
+		<field name="Fecha Fin" class="java.lang.String"/>
+		<field name="Días" class="java.lang.Long"/>
+	</subDataset>
+	<queryString>
+		<![CDATA[SELECT 1;]]>
+	</queryString>
+	<field name="1" class="java.lang.Long"/>
+	<title>
+		<band height="65" splitType="Stretch">
+			<staticText>
+				<reportElement style="borde" x="0" y="0" width="572" height="65" uuid="78cb1fec-25b4-448c-b486-47a43fb783b4"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Tahoma" size="24"/>
+				</textElement>
+				<text><![CDATA[LISTADO DE USUARIOS ACTIVOS]]></text>
+			</staticText>
+		</band>
+	</title>
+	<detail>
+		<band height="46" splitType="Stretch">
+			<componentElement>
+				<reportElement key="table" style="table" x="0" y="0" width="572" height="46" uuid="29ff8cfb-09d9-4598-9740-d1badfb316d9"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="datos" uuid="c2bfe593-ef58-4b6c-99c1-8c7553ecc542">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					</datasetRun>
+					<jr:column width="90" uuid="612813cf-9546-4c48-9e1a-e49daa6bd5aa">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" forecolor="#FFFFFF" uuid="b7e87200-55e5-4f27-8307-59c47d14a6ef"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Identificacion]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="88" height="20" uuid="b3da7d68-d07c-44b5-809e-1373bef73e28"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Identificacion}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="149" uuid="067bf9d7-d5f6-42a2-bafb-4e9cd39b42db">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="149" height="30" forecolor="#FFFFFF" uuid="9e30172b-b76e-439d-a99d-39b3752f76d8"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Nombre]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="147" height="20" uuid="12508f6a-1a9f-46a0-bed9-24fdd11c7196"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Nombre}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="125" uuid="8148d468-0227-4ab4-9aff-1c052c64107a">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="125" height="30" forecolor="#FFFFFF" uuid="f5a3f723-bec3-4438-b065-0405c5cf8fe3"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Plan]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="123" height="20" uuid="09e05786-2ac7-4f36-a354-695bafc17892"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Plan}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="118" uuid="20b62bd5-7681-4c3b-b400-998f7eb0e5fe">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="118" height="30" forecolor="#FFFFFF" uuid="ecb4216a-25f9-4342-a623-809e49cab7ab"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Fecha Fin]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField>
+								<reportElement x="2" y="0" width="116" height="20" uuid="38b7ad0b-7302-4cc5-8920-7f03ac6238f7"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Fecha Fin}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="6257eccb-34bd-459d-9665-d6bd743ffbc0">
+						<jr:columnHeader style="table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="30" forecolor="#FFFFFF" uuid="41c39b6d-8ab5-4fb6-b5c6-3b0cab95d04f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Tahoma" size="12" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Días]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table_TD" height="20" rowSpan="1">
+							<textField isBlankWhenNull="true">
+								<reportElement x="2" y="0" width="88" height="20" uuid="fa7a6a5d-4a57-4348-b165-5a72869b25f0"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Tahoma"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{Días}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+</jasperReport>

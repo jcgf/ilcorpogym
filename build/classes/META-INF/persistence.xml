@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="BohioGymPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>entity.GymKey</class>
+    <class>entity.UserInfo</class>
+    <class>entity.UserLog</class>
+    <class>entity.GymPermisos</class>
+    <class>entity.UserPermisos</class>
+    <class>entity.GymUsuarios</class>
+    <class>entity.GymTerceros</class>
+    <!--<properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bohioGym"/>
+      <property name="javax.persistence.jdbc.user" value="root"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.password" value="root"/>
+    </properties>-->
+    <class>entity.GymPlanes</class>
+    <class>entity.GymArticulo</class>
+    <class>entity.VariedadesDevoluciones</class>
+    <class>entity.SuministroArticulos</class>
+    <class>entity.ConsecutivoDevoluciones</class>
+    <class>entity.EgresoItem</class>
+    <class>entity.VariedadesIngresos</class>
+    <class>entity.ConsecutivoIngresos</class>
+    <class>entity.ConsecutivoVentas</class>
+    <class>entity.VentasArticulos</class>
+    <class>entity.VariedadesSuministro</class>
+    <class>entity.ConsecutivoSuministros</class>
+    <class>entity.ArticulosCantidades</class>
+    <class>entity.IngresoItem</class>
+    <class>entity.VariedadesEgresos</class>
+    <class>entity.ConsecutivoEgresos</class>
+    <class>entity.VariedadesCaja</class>
+    <class>entity.VariedadesVentas</class>
+    <class>entity.VariedadesArticulos</class>
+    <class>entity.DevolucionesArticulos</class>
+    <class>entity.VentasServicios</class>
+    <class>entity.GymAsignados</class>
+    <class>entity.AsignadosDias</class>
+    <class>entity.GymHuella</class>
+    <class>entity.GymContdias</class>
+    <class>entity.MailSend</class>
+    <class>entity.MailMensaje</class>
+    <class>entity.GymCongelado</class>
+    <class>entity.VariedadesAbono</class>
+  </persistence-unit>
+</persistence>
