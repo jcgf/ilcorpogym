@@ -32,6 +32,10 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "GymCongelado.findAll", query = "SELECT g FROM GymCongelado g")})
 public class GymCongelado implements Serializable {
 
+    @Column(name = "fechadescongela")
+    @Temporal(TemporalType.DATE)
+    private Date fechadescongela;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -117,6 +121,14 @@ public class GymCongelado implements Serializable {
     @Override
     public String toString() {
         return "entity.GymCongelado[ id=" + id + " ]";
+    }
+
+    public Date getFechadescongela() {
+        return fechadescongela;
+    }
+
+    public void setFechadescongela(Date fechadescongela) {
+        this.fechadescongela = fechadescongela;
     }
     
 }

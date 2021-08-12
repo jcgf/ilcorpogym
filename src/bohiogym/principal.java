@@ -236,11 +236,13 @@ public class principal extends javax.swing.JFrame {
                         if (obtenerCongelado(ga).size() > 0) {
                             congelado = obtenerCongelado(ga).get(obtenerCongelado(ga).size() - 1);
                             congelado.setFechacongela(new Date());
+                            congelado.setFechadescongela(Funciones.ddMMyyyy.parse("01/01/1900"));
                             gcjc.edit(congelado);
                         } else {
                             congelado = new GymCongelado();
                             congelado.setIdasignacion(ga);
                             congelado.setFechacongela(new Date());
+                            congelado.setFechadescongela(Funciones.ddMMyyyy.parse("01/01/1900"));
                             congelado.setEstado(1);
                             gcjc.create(congelado);
                         }
@@ -263,6 +265,41 @@ public class principal extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Proceso finalizado exitosamente");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(null, ex.getMessage() + " Error al congelar los planes");
+            }
+        }
+    }
+
+    private void descongelaXFecha() {
+        List<GymAsignados> listaasignados = gajc.findGymAsignadosEntities();
+        for (GymAsignados ga : listaasignados) {
+            if (ga.getEstado() == 3) {
+                List<GymCongelado> congeladoL = obtenerCongelado(ga);
+                if (congeladoL.size() > 0) {
+                    for (GymCongelado gc : congeladoL) {
+                        Date fechaActual = new Date(
+                                new Date().getYear(),
+                                new Date().getMonth(),
+                                new Date().getDate(),
+                                0, 0, 0);
+                        Date fechaDescongela = new Date(
+                                gc.getFechadescongela().getYear(),
+                                gc.getFechadescongela().getMonth(),
+                                gc.getFechadescongela().getDate(),
+                                0, 0, 0);
+                        if (fechaActual.compareTo(fechaDescongela) == 0) {
+                            try {
+                                GymCongelado gCongel = gc;
+                                gCongel.setEstado(0);
+                                gcjc.edit(gCongel);
+                                GymAsignados gAsignado = ga;
+                                gAsignado.setEstado(1);
+                                gajc.edit(gAsignado);
+                            } catch (Exception ex) {
+                                JOptionPane.showMessageDialog(null, "Error al descongelar usuario: \n" + ex.getMessage());
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -800,7 +837,7 @@ public class principal extends javax.swing.JFrame {
         @Override
         public void run() {
             finalizarusuarios();
-            this.stop();
+            descongelaXFecha();
         }
     }
 
@@ -813,7 +850,6 @@ public class principal extends javax.swing.JFrame {
         public void run() {
             Iniciar2();
             start2();
-            this.stop();
         }
     }
 

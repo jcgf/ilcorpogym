@@ -5,6 +5,7 @@
  */
 package bohiogym.paneles.panelusuarios;
 
+import bohiogym.clases.Funciones;
 import bohiogym.paneles.Usuarios;
 import bohiogym.paneles.panelarticulos.ventas;
 import entity.AsignadosDias;
@@ -35,7 +36,7 @@ import jpa.GymUsuariosJpaController;
  * @author Juan
  */
 public class aplanes extends javax.swing.JPanel {
-
+    
     private final Properties props;
     private final UserLog user;
     private final EntityManagerFactory factory;
@@ -66,11 +67,17 @@ public class aplanes extends javax.swing.JPanel {
         tIdentificacion.requestFocus();
         jDateChooser1.setDate(new Date());
         jDateChooser2.setDate(new Date());
+        try {
+            jDateChooser3.setDate(Funciones.ddMMyyyy.parse("01/01/1900"));
+            jDateChooser3.setEnabled(false);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Error al iniciar fecha descongelacicon: \n" + ex.getMessage());
+        }
         binactivar.setEnabled(false);
         bGuardar.setEnabled(false);
         jCheckBox3.setEnabled(false);
     }
-
+    
     public void cargarUsuario() {
         DecimalFormat df = new DecimalFormat("#");
         if (!tIdentificacion.getText().isEmpty() || tIdentificacion.getText() != null) {
@@ -123,7 +130,7 @@ public class aplanes extends javax.swing.JPanel {
             }
         }
     }
-
+    
     private List<GymUsuarios> findUsuario(String nit) {
         EntityManager em = gujc.getEntityManager();
         try {
@@ -135,7 +142,7 @@ public class aplanes extends javax.swing.JPanel {
             em.close();
         }
     }
-
+    
     private void buscarPlan() {
         if (gpjc == null) {
             gpjc = new GymPlanesJpaController(factory);
@@ -166,7 +173,7 @@ public class aplanes extends javax.swing.JPanel {
             }
         }
     }
-
+    
     private List<GymPlanes> searchPlan(String codigo) {
         EntityManager em = gpjc.getEntityManager();
         try {
@@ -178,7 +185,7 @@ public class aplanes extends javax.swing.JPanel {
             em.close();
         }
     }
-
+    
     private void saveAplan() {
         if (usuarios == null) {
             JOptionPane.showMessageDialog(null, "Debe buscar un usuario");
@@ -202,6 +209,7 @@ public class aplanes extends javax.swing.JPanel {
                     congelado = new GymCongelado();
                     congelado.setIdasignacion(asignados);
                     congelado.setFechacongela(new Date());
+                    congelado.setFechadescongela(jDateChooser3.getDate());
                     congelado.setEstado(1);
                     gcjc.create(congelado);
                 } else {
@@ -247,11 +255,13 @@ public class aplanes extends javax.swing.JPanel {
                         if (obtenerCongelado(asignados).size() > 0) {
                             congelado = obtenerCongelado(asignados).get(obtenerCongelado(asignados).size() - 1);
                             congelado.setFechacongela(new Date());
+                            congelado.setFechadescongela(jDateChooser3.getDate());
                             gcjc.edit(congelado);
                         } else {
                             congelado = new GymCongelado();
                             congelado.setIdasignacion(asignados);
                             congelado.setFechacongela(new Date());
+                            congelado.setFechadescongela(jDateChooser3.getDate());
                             congelado.setEstado(1);
                             gcjc.create(congelado);
                         }
@@ -314,7 +324,7 @@ public class aplanes extends javax.swing.JPanel {
             }
         }
     }
-
+    
     private List<AsignadosDias> Asignadosd(GymAsignados asignados) {
         EntityManager em = adjc.getEntityManager();
         try {
@@ -326,7 +336,7 @@ public class aplanes extends javax.swing.JPanel {
             em.close();
         }
     }
-
+    
     private List<GymAsignados> searchAsignados(String codigo) {
         EntityManager em = gajc.getEntityManager();
         try {
@@ -338,7 +348,7 @@ public class aplanes extends javax.swing.JPanel {
             em.close();
         }
     }
-
+    
     private List<GymCongelado> obtenerCongelado(GymAsignados asignados) {
         EntityManager em = adjc.getEntityManager();
         try {
@@ -350,7 +360,7 @@ public class aplanes extends javax.swing.JPanel {
             em.close();
         }
     }
-
+    
     private void limpiar() {
         usuarios = null;
         gymPlanes = null;
@@ -369,7 +379,7 @@ public class aplanes extends javax.swing.JPanel {
         jCheckBox3.setSelected(false);
         jCheckBox3.setEnabled(false);
     }
-
+    
     private void inactivar() {
         String mensaje = "Esta a punto de inactivar el plan al usuario.\n¿Esta seguro de desactivar el plan? ";
         int entrada = JOptionPane.showConfirmDialog(null, mensaje, "Crear Usuario", JOptionPane.YES_NO_OPTION);
@@ -388,7 +398,7 @@ public class aplanes extends javax.swing.JPanel {
             }
         }
     }
-
+    
     private void veVentas() {
         ventas vent = new ventas(factory, user, props);
         vent.jTextField2.setText(tIdentificacion.getText());
@@ -444,6 +454,7 @@ public class aplanes extends javax.swing.JPanel {
         jCheckBox2 = new javax.swing.JCheckBox();
         jTextField3 = new javax.swing.JTextField();
         jCheckBox3 = new javax.swing.JCheckBox();
+        jDateChooser3 = new com.toedter.calendar.JDateChooser();
 
         setMaximumSize(new java.awt.Dimension(492, 449));
         setMinimumSize(new java.awt.Dimension(492, 449));
@@ -593,6 +604,8 @@ public class aplanes extends javax.swing.JPanel {
             }
         });
 
+        jDateChooser3.setForeground(new java.awt.Color(102, 204, 0));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -628,11 +641,12 @@ public class aplanes extends javax.swing.JPanel {
                                 .addGap(0, 6, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(binactivar, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jTextField3))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jDateChooser3, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                    .addComponent(binactivar, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+                                    .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jTextField3, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(bSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
@@ -675,12 +689,17 @@ public class aplanes extends javax.swing.JPanel {
                             .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addComponent(jCheckBox3, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
-                        .addGap(8, 8, 8)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(bGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(bSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(binactivar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jCheckBox3, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                                .addGap(8, 8, 8)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(bGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(bSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(binactivar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addComponent(jSeparator1))
                 .addContainerGap())
         );
@@ -743,14 +762,18 @@ public class aplanes extends javax.swing.JPanel {
         if (entrada == 0) {
             if (jCheckBox3.isSelected()) {
                 jCheckBox3.setSelected(true);
+                jDateChooser3.setEnabled(true);
             } else {
+                jDateChooser3.setEnabled(false);
                 jCheckBox3.setSelected(false);
             }
         } else {
             if (jCheckBox3.isSelected()) {
+                jDateChooser3.setEnabled(false);
                 jCheckBox3.setSelected(false);
             } else {
                 jCheckBox3.setSelected(true);
+                jDateChooser3.setEnabled(true);
             }
         }
     }//GEN-LAST:event_jCheckBox3ActionPerformed
@@ -765,6 +788,7 @@ public class aplanes extends javax.swing.JPanel {
     private javax.swing.JCheckBox jCheckBox3;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
+    private com.toedter.calendar.JDateChooser jDateChooser3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
