@@ -218,7 +218,7 @@ public class lUsuariosactivos extends javax.swing.JPanel {
                         }
                     }
                 }
-                mail.enviaEmail(gus, mensaje.jTextArea1.getText());
+                mail.enviaEmail(gus, mensaje.jTextArea1.getText(), factory);
                 mensaje.dispose();
             }
 

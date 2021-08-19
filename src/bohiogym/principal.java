@@ -38,6 +38,7 @@ import entity.AsignadosDias;
 import entity.GymAsignados;
 import entity.GymCongelado;
 import entity.GymUsuarios;
+import entity.MailConfig;
 import entity.MailMensaje;
 import entity.MailSend;
 import entity.UserLog;
@@ -68,6 +69,7 @@ import jpa.AsignadosDiasJpaController;
 import jpa.GymAsignadosJpaController;
 import jpa.GymCongeladoJpaController;
 import jpa.GymUsuariosJpaController;
+import jpa.MailConfigJpaController;
 import jpa.MailMensajeJpaController;
 import jpa.MailSendJpaController;
 
@@ -99,6 +101,7 @@ public class principal extends javax.swing.JFrame {
     MailMensajeJpaController mmjc = null;
     GymCongelado congelado = null;
     GymCongeladoJpaController gcjc = null;
+    MailConfigJpaController mcjc = null;
 
     /**
      * Creates new form principal
@@ -115,6 +118,7 @@ public class principal extends javax.swing.JFrame {
         msjc = new MailSendJpaController(factory);
         mmjc = new MailMensajeJpaController(factory);
         gcjc = new GymCongeladoJpaController(factory);
+        mcjc = new MailConfigJpaController(factory);
         this.setTitle("Gimnasio Ilcorpo");
         hilofinal ut = new hilofinal();
         Thread r = new Thread(ut);
@@ -213,7 +217,7 @@ public class principal extends javax.swing.JFrame {
                     mensaje = mmjc.findMailMensajeEntities().get(0);
                 }
                 SendMail mail = new SendMail();
-                mail.sendEmail(gus, fec, mensaje.getMensaje());
+                mail.sendEmail(gus, fec, mensaje.getMensaje(), factory);
                 mailSend = new MailSend();
                 mailSend.setEstado(1);
                 msjc.create(mailSend);
@@ -437,6 +441,23 @@ public class principal extends javax.swing.JFrame {
         men.setVisible(true);
     }
 
+    private void editMailConfigs() {
+        MailConfig mailConfig = mcjc.findMailConfig(1);
+        String email = JOptionPane.showInputDialog(null, "Email", mailConfig.getEmail());
+        String password = JOptionPane.showInputDialog(null, "Password", mailConfig.getPassword());
+        try {
+            if (email != null && password != null) {
+                MailConfig newConfigs = mailConfig;
+                newConfigs.setEmail(email);
+                newConfigs.setPassword(password);
+                mcjc.edit(newConfigs);
+                JOptionPane.showMessageDialog(null, "Configuraciones editadas ecitosamente");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al ediar configuraciones: \n" + e.getMessage());
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -458,6 +479,7 @@ public class principal extends javax.swing.JFrame {
         bLBiometrica = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 500));
@@ -639,6 +661,15 @@ public class principal extends javax.swing.JFrame {
             }
         });
 
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/cog.png"))); // NOI18N
+        jLabel4.setToolTipText("Configuracion de correos");
+        jLabel4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jLabel4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jLabel4MouseReleased(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -653,7 +684,9 @@ public class principal extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)))
                 .addGap(4, 4, 4)
                 .addComponent(pPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE))
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -675,7 +708,8 @@ public class principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 234, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(bLBiometrica, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -793,6 +827,10 @@ public class principal extends javax.swing.JFrame {
     private void jLabel3MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseReleased
         cambiaMensaje();
     }//GEN-LAST:event_jLabel3MouseReleased
+
+    private void jLabel4MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseReleased
+        editMailConfigs();
+    }//GEN-LAST:event_jLabel4MouseReleased
 
     /**
      * @param args the command line arguments
@@ -938,7 +976,7 @@ public class principal extends javax.swing.JFrame {
             public void readerDisconnected(final DPFPReaderStatusEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        JOptionPane.showMessageDialog(null, "Error: " + e.getReaderStatus());
+                        //JOptionPane.showMessageDialog(null, "Error: " + e.getReaderStatus());
                     }
                 });
             }
@@ -1026,6 +1064,7 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     public javax.swing.JLabel lNombretitulo;

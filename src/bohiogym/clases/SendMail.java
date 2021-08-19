@@ -6,6 +6,7 @@
 package bohiogym.clases;
 
 import entity.GymUsuarios;
+import entity.MailConfig;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,32 +23,37 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.persistence.EntityManagerFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import jpa.MailConfigJpaController;
 
 /**
  *
  * @author Juan
  */
 public class SendMail {
-
+    
+    private EntityManagerFactory factory;
     private final Properties properties = new Properties();
-    private String password;
     private Session session;
-
-    private void init() {
+    
+    private void init(EntityManagerFactory factory) {
+        this.factory = factory;
+        MailConfigJpaController mcjc = new MailConfigJpaController(factory);
+        MailConfig mailConfig = mcjc.findMailConfig(1);
         properties.put("mail.smtp.host", "smtp.gmail.com");
         properties.put("mail.smtp.starttls.enable", "true");
         properties.put("mail.smtp.port", 587);
-        properties.put("mail.smtp.mail.sender", "ilcorpo.caf@gmail.com");
+        properties.put("mail.smtp.mail.sender", mailConfig.getEmail());
         properties.put("mail.smtp.user", "Il Corpo");
-        properties.put("mail.smtp.password", "ilcorpoCAF2");
+        properties.put("mail.smtp.password", mailConfig.getPassword());
         properties.put("mail.smtp.auth", "true");
         session = Session.getDefaultInstance(properties);
     }
-
-    public void sendEmail(ArrayList<String> usuarios, ArrayList<String> fecha, String mensaje) {
-        init();
+    
+    public void sendEmail(ArrayList<String> usuarios, ArrayList<String> fecha, String mensaje, EntityManagerFactory factory) {
+        init(factory);
         try {
             for (int i = 0; i < usuarios.size(); i++) {
                 MimeMessage message = new MimeMessage(session);
@@ -65,12 +71,12 @@ public class SendMail {
                 t.close();
             }
         } catch (MessagingException me) {
-            System.out.println("Error " + me.getMessage());
+            JOptionPane.showMessageDialog(null, "Error al enviar mensajes: \n" + me.getMessage());
         }
     }
-
-    public void enviaEmail(ArrayList<GymUsuarios> usuarios, String mensaje) {
-        init();
+    
+    public void enviaEmail(ArrayList<GymUsuarios> usuarios, String mensaje, EntityManagerFactory factory) {
+        init(factory);
         GymUsuarios u = null;
         try {
             InternetAddress[] recipientAddress = new InternetAddress[usuarios.size()];
@@ -93,7 +99,7 @@ public class SendMail {
             t.sendMessage(message, message.getAllRecipients());
             t.close();
         } catch (MessagingException me) {
-            JOptionPane.showMessageDialog(null, "Error " + me.getMessage() + " \nCorreo invalido: " + "<<" + u.getEmail() + ">>" + "\n" + u.getIdentificacion()
+            JOptionPane.showMessageDialog(null, "Error " + me.getMessage() + " \nCorreo Receptor: " + "<<" + u.getEmail() + ">>" + "\n" + u.getIdentificacion()
                     + " - " + u.getNombres() + " " + u.getApellidos());
         }
     }

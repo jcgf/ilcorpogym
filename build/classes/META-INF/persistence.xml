@@ -44,5 +44,6 @@
     <class>entity.MailMensaje</class>
     <class>entity.GymCongelado</class>
     <class>entity.VariedadesAbono</class>
+    <class>entity.MailConfig</class>
   </persistence-unit>
 </persistence>
